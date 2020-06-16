@@ -8,4 +8,65 @@
 
 首先进入学校网络的登录界面[10.10.244.11](http://10.10.244.11)，然后打开工具箱(快捷键是F12)，进入其中的网络标签，此时里面内容为空。
 
-![打开工具箱中的网络标签](pictures/1.JPG)
+![1](pictures/1.JPG)
+
+随后进行登录操作直到成功(根据实测经验，第一次的登录会失败，第二次才会成功)，此时网络标签显示如下：
+
+![2](pictures/2.JPG)
+
+找到第一个POST请求，点开，查看其详细参数(部分参数为虚构)：
+
+在消息头标签页中，获取请求字符串样例如下:
+
+`http://10.10.244.11:801/eportal/?c=ACSetting&a=Login&protocol=http:&hostname=10.10.244.11&iTermType=1&wlanuserip=10.130.194.44&wlanacip=10.255.253.118&wlanacname=SPL-BRAS-SR8806-X&mac=00-00-00-00-00-00&ip=10.130.194.44&enAdvert=0&queryACIP=0&loginMethod=1`
+
+随后转到请求标签页，查看其查询字符串和表单数据，样例如下(以json形式列出):
+
+查询字符串
+
+```
+{
+    "c": "ACSetting",
+    "a": "Login",
+    "protocol": "http:",
+    "hostname": "10.10.244.11",
+    "iTermType": "1",
+    "wlanuserip": "10.130.194.44",
+    "wlanacip": "10.255.253.118",
+    "wlanacname": "SPL-BRAS-SR8806-X",
+    "mac": "00-00-00-00-00-00",
+    "ip": "10.130.194.44",
+    "enAdvert": "0",
+    "queryACIP": "0",
+    "loginMethod": "1"
+}
+```
+
+表单数据
+
+```
+{
+    "DDDDD": ",0,agagaefa@njxy",
+    "upass": "dgagergawg",
+    "R1": "0",
+    "R2": "0",
+    "R3": "0",
+    "R6": "0",
+    "para": "00",
+    "0MKKey": "123456",
+    "buttonClicked": "",
+    "redirect_url": "",
+    "err_flag": "",
+    "username": "",
+    "password": "",
+    "user": "",
+    "cmd": "",
+    "Login": "",
+    "v6ip": ""
+}
+```
+
+可以在多台电脑上进行尝试，并尝试不同的运营商组合，以便找到其规律。目前我测试时找到的规律如下：
+
+请求的URL实际为`http://10.10.244.11:801/eportal/`，后续使用`?`搭载查询字符串，格式为：`名称=数据`，使用`&`符号连接。
+
